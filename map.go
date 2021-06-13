@@ -118,17 +118,6 @@ func (e *entry) delete() (hadValue bool) {
 	}
 }
 
-//资源清理，可选功能
-func GC(m *Map) {
-	go func() {
-		for k, e := range m.m {
-			if e.ep <= time.Now().Unix() {
-				m.Delete(k)
-			}
-		}
-	}()
-}
-
 func (m *Map) Range(f func(key string, value interface{}) bool) {
 	for k, e := range m.m {
 		v, ok := e.load()
@@ -141,9 +130,11 @@ func (m *Map) Range(f func(key string, value interface{}) bool) {
 	}
 }
 
-//清空map -- 效率没有GC高，弃用 --
-func (m *Map) CleanAll() {
-	for k, _ := range m.m {
-		m.Delete(k)
+func (m *Map) delsWithExpire() bool {
+	for k, e := range m.m {
+		if e != nil && e.ep > 0 && time.Now().Unix() >= e.ep {
+			m.Delete(k)
+		}
 	}
+	return true
 }
