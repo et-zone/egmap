@@ -28,7 +28,8 @@ func GCRun() {
 //注册需要gc的map
 func RegistGC(m *Map) {
 	if regist == nil {
-		*regist = make([]unsafe.Pointer, 0)
+		r := make([]unsafe.Pointer, 0)
+		regist = &r
 	}
 	tmpp := unsafe.Pointer(&m)
 	for _, p := range *regist {
