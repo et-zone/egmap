@@ -8,7 +8,7 @@ import (
 )
 
 type Map struct {
-	mu sync.Mutex
+	mu *sync.Mutex
 	m  map[string]*entry
 }
 
@@ -23,7 +23,7 @@ func newEntry(i interface{}) *entry {
 }
 
 func NewEMap() *Map {
-	return &Map{m: map[string]*entry{}}
+	return &Map{mu: &sync.Mutex{}, m: map[string]*entry{}}
 }
 
 // Load returns the value stored in the map for a key, or nil if no
