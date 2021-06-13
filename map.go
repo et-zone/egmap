@@ -133,7 +133,13 @@ func (m *Map) Range(f func(key string, value interface{}) bool) {
 func (m *Map) delsWithExpire() bool {
 	for k, e := range m.m {
 		if e != nil && e.ep > 0 && time.Now().Unix() >= e.ep {
-			m.Delete(k)
+			// m.Delete(k)
+			m.mu.Lock()
+			if e, ok := m.m[key]; key != "" && ok && e != nil {
+				e.delete()
+				delete(m.m, key)
+			}
+			m.mu.Unlock()
 		}
 	}
 	return true
