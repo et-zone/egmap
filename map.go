@@ -135,10 +135,10 @@ func (m *Map) delsWithExpire() bool {
 		if e != nil && e.ep > 0 && time.Now().Unix() >= e.ep {
 			// m.Delete(k)
 			m.mu.Lock()
-			if e, ok := m.m[key]; key != "" && ok && e != nil {
-				e.delete()
-				delete(m.m, key)
-			}
+
+			e.delete()
+			delete(m.m, k)
+
 			m.mu.Unlock()
 		}
 	}
